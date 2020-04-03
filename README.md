@@ -109,7 +109,7 @@ Example: query to return who drives a car owned by a lover
 
 ### Query Data
 
-    Example: who does Pukar love?
+    Example 1: who does Pukar love?
     
     MATCH
          (:Person {name: 'Pukar'}) - [:LOVES] -> (op:Person)
@@ -117,7 +117,7 @@ Example: query to return who drives a car owned by a lover
          op
           
           
-    Example: finding Pukar's car? 
+    Example 2: finding Pukar's car? 
     
     MATCH
         (:Person {name: 'Pukar'}) - [:DRIVES] -> (c: Car)
@@ -166,7 +166,31 @@ Example: query to return who drives a car owned by a lover
       a.instagram = '@iampukar'
     MERGE (a) - [:HAS_PET] -> (:Dog {name: 'Jack'})
     
-    ==> looks into the graph for a person named Pukar. Else create a new node, and set it's property 'twitter', and then create a HAS_PET relationship from Person Pukar to Dog named Jack, ONLY IF that pattern exactly doesn't exist in the graph. 
+    ==> looks into the graph for a person named Pukar. Else create a new node, and set it's property 'twitter', and then create a HAS_PET relationship from Person Pukar to Dog named Jack, ONLY IF that pattern exactly doesn't exist in the graph.
     
+### Case Sensitivity
+
+    Case Sensitive: Node labels, Relationship types, Property keys
+    Case Insensitive: Cypher keywords (like, MATCH, RETURN)
     
+### Aggregates
+
+    WHERE - used to filter results
     
+    Example 1:
+    
+    MATCH (m: Movie)
+    WHERE m.title = "Ice Age"
+    RETURN m
+    
+    Example 2:
+    
+    MATCH (p:Person) - [r:ACTED_IN] -> (m;Movie)
+    WHERE m.released >= 2000
+    RETURN m.released, a.name
+    
+Note:
+
+    * null doesn't mean NULL explicitly, but relates to missing or undefined values. Meaning, the value doesn't exist on that given node.
+    
+    * =~ allows us to do regular expression matching.
