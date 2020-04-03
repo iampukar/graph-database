@@ -57,3 +57,116 @@ Neo4j serves as a benchmark for asset compliant, transactional database. It come
   - Glance in the ER-diagram of your relational database
   - Locate the foreign keys, and replace them with RELATIONSHIPS
   - Identify the join tables, and eliminate the same with RELATIONSHIPS or RELATIONSHIPS with property values (if they are attributed join tables)
+  
+  
+# Cypher
+
+### General
+
+Cypher is basically the graph query language, which is purely based on patterns. Patterns in Cypher use ASCII-Art in the following manner: 
+    
+    1. Nodes
+    
+    - Nodes are surrounded by parantheses
+    Example: (), (Person)
+    
+    - Labels, or tag, start with ':', and group nodes by roles or types
+    Example: (p:Person)
+    
+    - Node can have properties, delimitted by curly brackets. 
+    Example: (p:Person {first_name: 'Pukar', last_name: 'Acharya'})
+    
+    
+    2. Relationships
+    
+    - Relationships are wrapped with hyphen or square brackets
+    Example: -->, -[h: HIRED]->
+    
+    - Directions in a relationship is established with >, or a <
+    Example: (p1) - [h:HIRED] -> (p2), (p1) <- [h:HIRED] - (p2)
+    
+    - Relationships have properties as well 
+    Example: - [HIRED {type: 'full_time'}) -> 
+    
+    Here: h, p1, p2 are references that can be used at later end while using the query. 
+    
+    
+Example: query to return who drives a car owned by a lover
+    
+    MATCH
+          (p1:Person) - [:DRIVES] -> (c:Car) - [:OWNED_BY] -> (p2:Person) <- [:LOVES] - (p1)
+    RETURN
+          p1
+
+### Create Data
+
+    Example: 
+           <-------- Node --------->               <-------- Node --------->
+    
+    CREATE (:Person {name: 'Pukar'}) - [:LOVES] -> (:Person {name: 'Julie'})
+    
+           <-Label->                                         <--Property-->
+
+### Query Data
+
+    Example: who does Pukar love?
+    
+    MATCH
+         (:Person {name: 'Pukar'}) - [:LOVES] -> (op:Person)
+    RETURN
+         op
+          
+          
+    Example: finding Pukar's car? 
+    
+    MATCH
+        (:Person {name: 'Pukar'}) - [:DRIVES] -> (c: Car)
+    RETURN
+        c
+          
+    OR, 
+    
+    MATCH
+        (p:Person] - [:DRIVES] -> (c: Car)
+    WHERE
+        p.name = 'Pukar'
+    RETURN
+        c
+          
+    OR more specific description/properties of the car, 
+    
+    MATCH
+        (p:Person] - [:DRIVES] -> (c: Car)
+    WHERE
+        p.name = 'Pukar'
+    SET
+        c.brand = 'Voodoo', 
+        c.model = 'V2'
+    RETURN
+        c
+    
+### Create Uniqueness
+
+    Example 1: say a named node, 'Pukar' should be made in such a way that there exists no duplicate records
+    
+    CREATE CONSTRAINT ON (p:Person})
+    ASSERT p.name IS UNIQUE 
+    
+    Example 2: 
+    
+    MERGE (a: Person {name: 'Pukar'})
+    CREATE (a) - [:HAS_PET] -> (:Dog {name: 'Jack'})
+    
+    ==> looks into the graph for a person named Pukar, instead of creating a new node Pukar, and operates on the person node if it exists, or else it will create a new node
+    
+    Example 3: 
+    
+    MERGE (a: Person {name: 'Pukar'})
+    ON CREATE SET
+      a.instagram = '@iampukar'
+    MERGE (a) - [:HAS_PET] -> (:Dog {name: 'Jack'})
+    
+    ==> looks into the graph for a person named Pukar. Else create a new node, and set it's property 'twitter', and then create a HAS_PET relationship from Person Pukar to Dog named Jack, ONLY IF that pattern exactly doesn't exist in the graph. 
+    
+    
+    
