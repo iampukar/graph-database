@@ -4,19 +4,21 @@
 
 ### General
 
-A graph database is useful to model the entity relationship, exactly in the way as it exists in the physical world. The key feature that separates graph based database from every other database if their ability to store the relationships, and the connections as first class entities. 
+A graph database is useful to model the entity relationship, exactly in the way as it exists in the physical world. The key feature that separates graph based database from every other database is their ability to store the relationships, and the connections as first class entities. 
+
+Example of a graph-alike database includes,Facebook that helps to capture the entity and relationship in the social graph, Google based on a web graph, etc.
 
 A general graph based database has two units: 
   - Nodes
   
     Noun cases: a person, place, or a thing, or a valued data name. Each of these nodes are identified using a named label.
           
-        Example: a 'name' node is a node with label, 'Name', that has the properties: 'firstName', 'middleName', 'lastName'.
+        Example: a 'name' node is a node with label, 'Name', that can have the following properties: 'firstName', 'middleName', 'lastName'.
         There can exist another node called 'Name' representing buildings, or a place, or a thing.
         
   - Relationships
   
-    Each of the nodes are connected by means of what we call it a relationship. Say two nodes, Person can be conected with a     relationship, 'IS_FRIEND'. 
+    Each of the nodes are connected by means of what we call a relationship. Say two nodes, Person can be conected with a     relationship, 'IS_FRIEND'. 
           
         Example: (Person) - [:IS_FRIEND] -> (Person) 
 
@@ -35,18 +37,20 @@ Unique features:
 
 ### Perks of using a graph database over traditional database system
 
-- Length of the general query is very long and difficult to read when it comes to a general database 
-- Most SQL queries for large scale organizations are tangled with joins that are completely functional, but impractical with respect to performamce as its size increases. 
+- Length of the general query is very long and difficult to read when it comes to a general database.
+- Foreign key constraints on most of the database add additional development and maintainance burden to the developers.
+- Most of the general database have no dire identifiers that can help us to leverage the ability to point backward in the data, or in any direction as necessary.
+- Most SQL queries for large scale organizations are tangled with joins that are completely functional, but impractical with respect to performamce, as the size of their data increases. These join tables add accidental complexity. 
 - Graphs make it easier to model and store relationship.
-- Relationship traversal can be computed in constant time, even with growing data size.
-- Additional of properties or relationships can be done without the need of any schema migration.
+- Relationship traversal can be computed in constant time, even with growing data size. In short, the execution time for each query is proportional to the size of the graph traversed to satisfy that query, and not the overall size of the graph.
+- Addition of properties or relationships can be done without the need of any schema migration. Graphs are naturally additive, meaning we can add any new nodes, or relationships, to an existing structure without having to disturb the running functionality.
 
 
 # Neo4j
 
 ### General
 
-Neo4j serves as a benchmark for asset compliant, transactional database. It comes with a graph platform, that has the following features which are inline with the another general purpose database as well.  
+Neo4j serves as a benchmark for asset compliant, transactional database. It comes with a graph platform, that has the following features, which are inline with the another general purpose database as well.  
   - Index free adjacency, every connected component can be traversed in constant time without the need of an index.
   - ACID (Atomic, Consistent, Isolated, Durable), if a relationship between nodes are created, they are updated as the connection is established. 
   - Clusters, and extensive library support
