@@ -1,5 +1,4 @@
 
-
 # Graph Database
 
 ### General
@@ -195,6 +194,28 @@ Example: query to return who drives a car owned by a lover
     
 Note:
 
-    * null doesn't mean NULL explicitly, but relates to missing or undefined values. Meaning, the value doesn't exist on that given node.
+    * null doesn't mean NULL explicitly, but relates to missing or undefined values for a given node.
     
     * =~ allows us to do regular expression matching.
+    
+
+# Books
+
+  [Neo4j in Action - Manning](https://www.manning.com/books/neo4j-in-action)
+
+
+# References and other Resources
+
+  [Getting Started](https://neo4j.com/developer/get-started/)
+  
+  [Introduction to Neo4j](https://neo4j.com/graphacademy/online-training/introduction-to-neo4j/)
+  
+  [Neo4j Certification](https://neo4j.com/graphacademy/neo4j-certification/)
+  
+  [Neo4j Learning Resources](https://neo4j.com/developer/resources/)
+  
+  [Neo4j Community](https://community.neo4j.com/)
+  
+  [Cypher Cheat Sheets](https://neo4j.com/docs/cypher-refcard/current/)
+  
+  [Graph Database Use Cases](https://github.com/iansrobinson/graph-databases-use-cases)
