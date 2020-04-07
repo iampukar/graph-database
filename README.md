@@ -192,6 +192,136 @@ Example: query to return who drives a car owned by a lover
     WHERE m.released >= 2000
     RETURN m.released, a.name
     
+### Uniqueness Constraint
+
+    CREATE CONSTRAINT ON 
+      (p: Person)
+    ASSERT 
+      p.name IS UNIQUE
+      
+### Uniqueness Constraint with a primary key node alike strucutre
+
+    CREATE CONSTRAINT ON 
+      (m: Movie)
+    ASSERT 
+      (m.title, m.released) IS NODE KEY 
+      
+Displaying the list of all constraints in the graph: 
+
+    CALL db.constraints()
+    
+Dropping an existing constraint: 
+
+    DROP CONSTRAINT ON 
+      () - [r: ACTED_IN] - () 
+    ASSERT exists (r.roles) 
+
+### Creating a new relationships 
+
+    MATCH (M: Movie) 
+      WHERE m.title = 'VEER ZAARA' 
+    MATCH (p: Person) 
+      WHERE p.name = 'Pukar Acharya' OR p.name = 'Aakash Bista' OR p.name = 'Avinash Jha' 
+    CREATE (p) - [:ACTED_IN] -> (m)
+    
+Adding properties to the relationship: 
+
+    MATCH (p: Person) - [rel: ACTED_IN] -> (m: Movie) 
+      WHERE m.title = 'Main Hoo Na'
+    SET rel.roles = 
+      CASE p.name
+        WHEN 'Pukar Acharya' THEN ['Ram']
+        WHEN 'Sushan Acharya' THEN ['Laksham']
+    END
+    
+Viewing the current list of property keys: 
+
+    CALL db.propertyKeys
+    
+Viewing the current schema: 
+
+    CALL db.schema
+    
+    
+### Creating a new Node to an existing node
+
+    MERGE (m: Movie {title: 'Devdas'})
+      ON CREATE SET m.released = '1998'
+    RETURN m 
+    
+Creating two new nodes and a relationship: 
+
+    MERGE 
+      (p: Person {name: 'Amitabh Bachhcan'}) - [:DIRECTED] -> (m {title: 'Mard'})
+      
+Creating a new relationship: 
+
+    MATCH (p: Person), (m: Movie)
+      WHERE p.name IN ['Shah Rukh Khan', 'Amitabh Bachchan']
+        AND m.title = 'Mohabattein'
+    MERGE (p) - [:ACTED-IN] -> (m) 
+    
+### Retreiving nodes that are certain hops away
+
+    //nodes that are 1 or 2 hops away from the person node, 'Pukar Acharya'
+    MATCH
+      (p1: Person) - [:FOLLOWS*1..2] - (p2: Person) 
+    WHERE p1.name = 'Pukar Acharya' 
+    RETURN p1, p2
+    
+    //nodes that are three hops away from the person node, 'Pukar Acharya'
+    MATCH
+      (p1: Person) - [:FOLLOWS*3] - (p2: Person) 
+    WHERE p1.name = 'Pukar Acharya' 
+    RETURN p1, p2
+    
+    //nodes that are connected no matter the seperating distance 
+    MATCH
+      (p1: Person) - [:FOLLOWS*] - (p2: Person) 
+    WHERE p1.name = 'Pukar Acharya' 
+    RETURN p1, p2
+    
+
+### Loading Data from a CSV file
+
+Say a csv file, mycsvfile.csv exists, with headers: id, name, birthYear
+    
+    LOAD CSV WITH HEADERS 
+    FROM 'mycsvfile.csv'
+    AS line
+    RETURN line.id, line.name, line.birthYear
+    
+Properly formatted integer and string values
+    
+    LOAD CSV WITH HEADERS 
+    FROM 'mycsvfile.csv'
+    AS line
+    RETURN line.id, line.name, toInteger(trim(line.birthYear))
+    
+Loading data from a csv file to a graph with preexisting label:
+
+    LOAD CSV WITH HEADERS 
+    FROM 'mycsvfile.csv'
+    AS line
+    MERGE(a: Person {name: line.name})
+      ON CREATE 
+        SET a.born = toInteger(trim(line.birthYear)),
+            a.pid = line.id
+      ON MATCH SET a.pid = line.id
+      
+      
+    LOAD CSV WITH HEADERS 
+    FROM 'mycsvfile.csv'
+    AS line FIELDTERMINATOR ';'
+    MATCH (m: Movie {movieId: line. movieId})
+    MATCH (p: Person {a.pid = line.id})
+    MERGE (p) - [:ACTED_IN {roles: split(line.Role, ',')}] -> (m) 
+    MERGE(a: Person {name: line.name})
+      ON CREATE 
+        SET a.born = toInteger(trim(line.birthYear)),
+            a.pid = line.id
+      ON MATCH SET a.pid = line.id
+    
 Note:
 
     * null doesn't mean NULL explicitly, but relates to missing or undefined values for a given node.
